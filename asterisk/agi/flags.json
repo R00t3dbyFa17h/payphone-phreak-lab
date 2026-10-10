@@ -1,0 +1,10 @@
+{
+  "448162": {"id": "CH1", "name": "Hidden Directory (Esquire '71)", "points": 100},
+  "262600": {"id": "CH2", "name": "The 2600 Line", "points": 100},
+  "773355": {"id": "CH3", "name": "DISA Misconfiguration", "points": 200},
+  "909042": {"id": "CH4", "name": "Default Voicemail Credentials", "points": 150},
+  "314159": {"id": "CH5", "name": "DTMF Decode", "points": 200},
+  "867530": {"id": "CH6", "name": "The Maze", "points": 150},
+  "100461": {"id": "CH7", "name": "Milliwatt Test Line", "points": 100},
+  "580019": {"id": "CH8", "name": "ANAC / Know Thyself", "points": 150}
+}

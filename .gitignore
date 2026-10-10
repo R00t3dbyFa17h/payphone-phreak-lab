@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Scoreboard DB / data
+*.db
+scoreboard/scoreboard.db
+data/
+
+# Generated tool output (regenerate with tools/)
+/tools/*.wav
+
+# Editor/OS cruft
+.DS_Store
+*.swp

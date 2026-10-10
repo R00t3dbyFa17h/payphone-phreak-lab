@@ -1,0 +1,94 @@
+# payphone-phreak-lab :: challenge catalogue (human-readable)
+# The machine-readable flag map the PBX actually checks lives in
+# asterisk/agi/flags.json. Keep the two in sync (points especially).
+#
+# Difficulty: 1 (warm-up) .. 5 (brutal). Players dial the "entry" number,
+# work it out, hear a 6-digit FLAG, then dial 700 (Flag Terminal) to submit
+# <team#> + <flag>.
+
+event: "HTB Meetup :: Phone Phreak Night"
+flag_terminal: 700
+scoreboard: "http://<pbx-host>:8080"
+
+challenges:
+  - id: CH1
+    name: "Hidden Directory (Esquire '71)"
+    entry: 411
+    points: 100
+    difficulty: 1
+    skills: [enumeration, keypad-scanning]
+    brief: >
+      Directory Assistance (dial 411) lists some extensions but not all.
+      One line is unlisted. Phreak lore points at October 1971. Find the
+      hidden extension and it will read you a flag.
+
+  - id: CH2
+    name: "The 2600 Line"
+    entry: 2600
+    points: 100
+    difficulty: 1
+    skills: [history, signalling]
+    brief: >
+      There's a number every phreak knows. Dial it. (Why 2600?)
+
+  - id: CH3
+    name: "DISA Misconfiguration"
+    entry: 767
+    points: 200
+    difficulty: 3
+    skills: [default-creds, dialplan-abuse]
+    brief: >
+      Dial 767 (P-O-P) to reach a Direct Inward System Access port. It
+      wants a 4-digit PIN. Weakly chosen PINs tend to echo the box's own
+      folklore. Guess it to score.
+
+  - id: CH4
+    name: "Default Voicemail Credentials"
+    entry: 5000
+    points: 150
+    difficulty: 2
+    skills: [default-creds]
+    brief: >
+      The voicemail system (5000) has a mailbox left on factory defaults
+      where the PIN equals the mailbox number. Find the lazy admin's box.
+
+  - id: CH5
+    name: "DTMF Decode"
+    entry: 322
+    points: 200
+    difficulty: 3
+    skills: [signal-analysis]
+    brief: >
+      Line 322 plays a burst of Touch-Tones. Record it and decode the
+      digits (tools/dtmf_decoder.py) -- the digits ARE the flag.
+
+  - id: CH6
+    name: "The Maze"
+    entry: 6000
+    points: 150
+    difficulty: 2
+    skills: [ivr-mapping]
+    brief: >
+      An IVR with no prompts. Map it. Only one path through the menus
+      reaches the flag; every wrong turn drops you back to the start.
+
+  - id: CH7
+    name: "Milliwatt Test Line"
+    entry: 600
+    points: 100
+    difficulty: 2
+    skills: [history, test-lines]
+    brief: >
+      600 is a 1004 Hz milliwatt test tone -- a classic quiet-termination
+      test line. Listen, understand what it's for, then dial 9999 to claim
+      the flag.
+
+  - id: CH8
+    name: "ANAC / Know Thyself"
+    entry: 958
+    points: 150
+    difficulty: 2
+    skills: [ani, test-lines]
+    brief: >
+      An Automatic Number Announcement Circuit reads back YOUR number.
+      Phreaks used these to learn a line's real digits. Dial 958.

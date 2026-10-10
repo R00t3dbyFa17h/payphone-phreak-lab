@@ -1,0 +1,42 @@
+# payphone-phreak-lab :: docker-compose.yml
+# Brings up the whole lab: the Asterisk PBX + the live web scoreboard.
+#
+#   docker compose up --build
+#
+# Then point softphones / the payphone's ATA at this host's IP (SIP 5060),
+# and open the scoreboard at http://<host>:8080
+#
+# NOTE: Asterisk uses host networking by default below so SIP/RTP "just
+# works" on a flat meetup LAN. If you prefer bridged networking, comment out
+# network_mode: host and uncomment the ports: block (and set external IPs in
+# pjsip.conf). See docs/SETUP.md.
+
+services:
+  pbx:
+    build: ./asterisk
+    container_name: phreak-pbx
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - SCOREBOARD_URL=http://127.0.0.1:8080
+      - SCOREBOARD_TOKEN=change-me-phreaklab
+    # ports:                 # (only if NOT using network_mode: host)
+    #   - "5060:5060/udp"
+    #   - "10000-10099:10000-10099/udp"
+    depends_on:
+      - scoreboard
+
+  scoreboard:
+    build: ./scoreboard
+    container_name: phreak-scoreboard
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - SCOREBOARD_TOKEN=change-me-phreaklab
+      - PORT=8080
+      - DB_PATH=/data/scoreboard.db
+    volumes:
+      - scoreboard-data:/data
+
+volumes:
+  scoreboard-data:

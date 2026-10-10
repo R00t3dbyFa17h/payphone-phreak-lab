@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PhreakNet Scoreboard</title>
+<style>
+  :root { color-scheme: dark; }
+  body { background:#0a0e14; color:#c9d1d9; font-family:"Courier New",monospace; margin:0; padding:24px; }
+  h1 { color:#39ff14; text-shadow:0 0 8px rgba(57,255,20,.4); letter-spacing:2px; margin:0 0 4px; }
+  .sub { color:#8b949e; margin:0 0 20px; }
+  .wrap { display:flex; gap:24px; flex-wrap:wrap; }
+  .panel { background:#0d1117; border:1px solid #1f6feb33; border-radius:8px; padding:16px; flex:1; min-width:320px; }
+  table { width:100%; border-collapse:collapse; }
+  th,td { text-align:left; padding:8px 10px; border-bottom:1px solid #161b22; }
+  th { color:#58a6ff; text-transform:uppercase; font-size:12px; letter-spacing:1px; }
+  .rank { color:#8b949e; width:36px; }
+  .pts { color:#39ff14; font-weight:bold; text-align:right; }
+  .pill { background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1px 8px; font-size:12px; color:#7ee787; }
+  tr:first-child .rank { color:#ffd700; }
+  .recent td { font-size:13px; }
+  .ts { color:#8b949e; font-size:12px; }
+  footer { margin-top:24px; color:#484f58; font-size:12px; }
+  .blink { animation:blink 1.4s step-start infinite; } @keyframes blink{50%{opacity:.35}}
+</style>
+</head>
+<body>
+  <h1>&#9742; PHREAKNET SCOREBOARD</h1>
+  <p class="sub">payphone-phreak-lab &mdash; live from the switch <span class="blink">&#9679;</span></p>
+  <div class="wrap">
+    <div class="panel">
+      <table>
+        <thead><tr><th class="rank">#</th><th>Team</th><th>Solved</th><th class="pts">Points</th></tr></thead>
+        <tbody>
+        {% for t in teams %}
+          <tr>
+            <td class="rank">{{ loop.index }}</td>
+            <td>{{ t['name'] }} <span class="ts">({{ t['id'] }})</span></td>
+            <td><span class="pill">{{ t['solved'] }}</span></td>
+            <td class="pts">{{ t['points'] }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="4" class="ts">No teams yet &mdash; dial 700 and submit a flag!</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="panel recent">
+      <table>
+        <thead><tr><th colspan="3">Recent Captures</th></tr></thead>
+        <tbody>
+        {% for r in recent %}
+          <tr>
+            <td>{{ r['name'] or ('Team ' ~ r['team']) }}</td>
+            <td>{{ r['challenge'] }}</td>
+            <td class="pts">+{{ r['points'] }}</td>
+          </tr>
+        {% else %}
+          <tr><td class="ts">&mdash;</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <footer>
+    Auto-refreshes every 5s &middot; payphone-phreak-lab by R00t3dbyFa17h / K70n0s510 &middot;
+    For authorized education &amp; your own lab only.
+  </footer>
+<script>
+  // Live refresh without a full reload flash.
+  async function tick(){
+    try{
+      const r = await fetch('/api/board',{cache:'no-store'});
+      if(!r.ok) return;
+      const d = await r.json();
+      const tb = document.querySelectorAll('.panel')[0].querySelector('tbody');
+      if(d.teams.length){
+        tb.innerHTML = d.teams.map((t,i)=>`<tr><td class="rank">${i+1}</td><td>${esc(t.name)} <span class="ts">(${esc(t.id)})</span></td><td><span class="pill">${t.solved}</span></td><td class="pts">${t.points}</td></tr>`).join('');
+      }
+      const rb = document.querySelectorAll('.panel')[1].querySelector('tbody');
+      if(d.recent.length){
+        rb.innerHTML = d.recent.map(r=>`<tr><td>${esc(r.name||('Team '+r.team))}</td><td>${esc(r.challenge)}</td><td class="pts">+${r.points}</td></tr>`).join('');
+      }
+    }catch(e){}
+  }
+  function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+  setInterval(tick, 5000);
+</script>
+</body>
+</html>
